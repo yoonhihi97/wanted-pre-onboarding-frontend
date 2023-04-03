@@ -28,7 +28,7 @@ function SignIn() {
       .then((result) => {
         if (result.status === 200) {
           const { data } = result;
-          localStorage.setItem("access_token", data.access_token);
+          localStorage.setItem("access_token", `Bearer ${data.access_token}`);
           //Todo 페이지로 이동
         }
       })
