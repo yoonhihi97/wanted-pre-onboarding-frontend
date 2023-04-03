@@ -81,6 +81,15 @@ function SignIn() {
             />
           </div>
         </div>
+        <div className="text-sm">
+          <span className="mr-1 font-medium text-gray-900">New to Todo?</span>
+          <a
+            href="#"
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
+            Create an account.
+          </a>
+        </div>
         <div>
           <button
             className="relative flex justify-center w-full px-3 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md group hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-30 "
