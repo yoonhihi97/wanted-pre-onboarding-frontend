@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 import login from "api/login/useLogin";
 
 function SignIn() {
+  const navigate = useNavigate();
   const [endStep, setEndStep] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,8 +26,11 @@ function SignIn() {
   const signinHandler = () => {
     login(email, password)
       .then((result) => {
-        localStorage.setItem("access_token", result.data.access_token);
-        //Todo 페이지로 이동
+        if (result.status === 200) {
+          const { data } = result;
+          localStorage.setItem("access_token", data.access_token);
+          //Todo 페이지로 이동
+        }
       })
       .catch(() => {
         alert("이메일 또는 비밀번호가 일치 하지 않습니다.");
@@ -83,12 +88,14 @@ function SignIn() {
         </div>
         <div className="text-sm">
           <span className="mr-1 font-medium text-gray-900">New to Todo?</span>
-          <a
-            href="#"
+          <span
             className="font-medium text-indigo-600 hover:text-indigo-500"
+            onClick={() => {
+              navigate("/signup");
+            }}
           >
             Create an account.
-          </a>
+          </span>
         </div>
         <div>
           <button
