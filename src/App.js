@@ -1,5 +1,15 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import SignIn from "pages/signin";
+
 function App() {
-  return <div className="text-3xl text-blue-500">hello world</div>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
