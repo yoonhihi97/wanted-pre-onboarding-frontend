@@ -1,12 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import App from "./App";
-import { BrowserRouter } from "react-router-dom";
 import "tailwindcss/tailwind.css";
+import { createRoot } from "react-dom/client";
 
-ReactDOM.render(
-  <BrowserRouter>
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
+root.render(
+  <React.StrictMode>
     <App />
-  </BrowserRouter>,
-  document.getElementById("root")
+  </React.StrictMode>
 );
