@@ -1,4 +1,4 @@
-import { customAxios } from "api/ customAxios";
+import customAxios from "api/ customAxios";
 
 const createTodo = async (todo) => {
   const result = await customAxios.post("/todos", { todo });

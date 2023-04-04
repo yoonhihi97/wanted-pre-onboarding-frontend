@@ -1,4 +1,4 @@
-import { customAxios } from "api/ customAxios";
+import customAxios from "api/ customAxios";
 
 const getTodo = async (todo) => {
   const result = await customAxios.get("/todos", { todo });
