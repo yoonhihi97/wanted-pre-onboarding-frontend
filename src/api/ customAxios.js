@@ -5,6 +5,6 @@ export const customAxios = axios.create({
   baseURL: `${API_URL}`,
   headers: {
     "Content-Type": "application/json",
-    Authorization: localStorage.getItem("access_token"),
+    Authorization: localStorage.getItem("Authorization"),
   },
 });
