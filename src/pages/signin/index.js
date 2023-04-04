@@ -23,6 +23,14 @@ function SignIn() {
     setEndStep(false);
   }, [email, password]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("Authorization");
+
+    if (token !== null) {
+      navigate("/todo");
+    }
+  }, []);
+
   const signinHandler = () => {
     login(email, password)
       .then((result) => {
