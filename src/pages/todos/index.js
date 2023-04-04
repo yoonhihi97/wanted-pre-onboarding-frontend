@@ -66,6 +66,7 @@ function Todos() {
 
   useEffect(() => {
     const token = localStorage.getItem("Authorization");
+    console.log(token);
 
     if (token !== null) {
       getData();

@@ -1,4 +1,4 @@
-import { customAxios } from "api/ customAxios";
+import customAxios from "api/ customAxios";
 
 const signup = async (email, password) => {
   const result = await customAxios.post("/auth/signup", { email, password });
