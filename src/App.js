@@ -6,7 +6,7 @@ import Todos from "pages/todos";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/">
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/signin" element={<SignIn />} />
