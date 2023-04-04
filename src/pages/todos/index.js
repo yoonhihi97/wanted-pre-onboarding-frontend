@@ -1,17 +1,24 @@
-import createTodo from "api/todos/useCreateTodo";
-import getTodo from "api/todos/useGetTodo";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+
+import createTodo from "api/todos/useCreateTodo";
+import deleteTodo from "api/todos/useDeleteTodo";
+import getTodo from "api/todos/useGetTodo";
+import updateTodo from "api/todos/useUpdateTodo";
 
 function Todos() {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [todo, setTodo] = useState("");
+  const [editId, setEditId] = useState(null);
+  const [editTodo, setEditTodo] = useState("");
 
-  const create = () => {
+  const createData = () => {
     createTodo(todo)
       .then((result) => {
-        console.log(result);
         if (result.status === 201) {
-          get();
+          setTodo("");
+          getData();
         }
       })
       .catch(() => {
@@ -19,7 +26,7 @@ function Todos() {
       });
   };
 
-  const get = () => {
+  const getData = () => {
     getTodo()
       .then((result) => {
         const { data } = result;
@@ -32,8 +39,40 @@ function Todos() {
       });
   };
 
+  const updateData = (id, todo, isCompleted) => {
+    updateTodo(id, todo, isCompleted)
+      .then((result) => {
+        if (result.status === 200) {
+          setEditId(null);
+          getData();
+        }
+      })
+      .catch(() => {
+        console.log("error");
+      });
+  };
+
+  const deleteData = (id) => {
+    deleteTodo(id)
+      .then((result) => {
+        if (result.status === 204) {
+          getData();
+        }
+      })
+      .catch(() => {
+        console.log("error");
+      });
+  };
+
   useEffect(() => {
-    get();
+    const token = localStorage.getItem("Authorization");
+
+    if (token !== null) {
+      getData();
+    } else {
+      alert("로그인을 해주세요.");
+      navigate("/login");
+    }
   }, []);
 
   return (
@@ -61,7 +100,7 @@ function Todos() {
               className="inline-flex items-center justify-center w-full px-3 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-indigo-300"
               data-testid="new-todo-add-button"
               onClick={() => {
-                create();
+                createData();
               }}
             >
               추가
@@ -85,39 +124,94 @@ function Todos() {
             {data.map((item, index) => (
               <li key={item.id}>
                 <div className="w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg ">
-                  <div className="inline-flex items-center mb-5">
+                  <div className="inline-flex items-center w-full mb-5">
                     <input
                       type="checkbox"
                       id="react-option"
                       value={item.isCompleted}
+                      checked={item.isCompleted}
                       className="w-6 h-6 mr-5 text-purple-600 form-checkbox"
+                      onChange={(e) => {
+                        updateData(item.id, item.todo, !item.isCompleted);
+                      }}
                     />
-                    <div className="block">
+                    <div className="block w-full">
                       <div className="w-full text-lg font-semibold">
                         {`#${index + 1}`}
                       </div>
-                      <div className="w-full text-sm">{item.todo}</div>
+                      {item.id === editId ? (
+                        <input
+                          data-testid="modify-input"
+                          className="mr-4 lg:px-2 relative block rounded border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 w-full"
+                          placeholder="Edit Todo"
+                          value={editTodo}
+                          onChange={(e) => {
+                            setEditTodo(e.target.value);
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full text-sm">{item.todo}</div>
+                      )}
                     </div>
                   </div>
-                  <div className="flex justify-end w-full mt-5 mr-8 lg:ml-4 lg:mt-0">
-                    <span className="sm:block">
-                      <button
-                        type="button"
-                        className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                      >
-                        수정
-                      </button>
-                    </span>
+                  {editId === item.id ? (
+                    <div className="flex justify-end w-full mt-5 mr-8 lg:ml-4 lg:mt-0">
+                      <span className="sm:block">
+                        <button
+                          type="button"
+                          data-testid="submit-button"
+                          className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                          onClick={() => {
+                            updateData(item.id, editTodo, item.isCompleted);
+                          }}
+                        >
+                          제출
+                        </button>
+                      </span>
 
-                    <span className="ml-3 mr-3 sm:block">
-                      <button
-                        type="button"
-                        className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white bg-red-500 rounded-md shadow-sm ring-1 ring-inset ring-gray-300"
-                      >
-                        삭제
-                      </button>
-                    </span>
-                  </div>
+                      <span className="ml-3 mr-3 sm:block">
+                        <button
+                          type="button"
+                          data-testid="cancel-button"
+                          className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white bg-red-500 rounded-md shadow-sm ring-1 ring-inset ring-gray-300"
+                          onClick={() => {
+                            setEditId(null);
+                          }}
+                        >
+                          취소
+                        </button>
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-end w-full mt-5 mr-8 lg:ml-4 lg:mt-0">
+                      <span className="sm:block">
+                        <button
+                          type="button"
+                          data-testid="modify-button"
+                          className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                          onClick={() => {
+                            setEditId(item.id);
+                            setEditTodo(item.todo);
+                          }}
+                        >
+                          수정
+                        </button>
+                      </span>
+
+                      <span className="ml-3 mr-3 sm:block">
+                        <button
+                          type="button"
+                          data-testid="delete-button"
+                          className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white bg-red-500 rounded-md shadow-sm ring-1 ring-inset ring-gray-300"
+                          onClick={() => {
+                            deleteData(item.id);
+                          }}
+                        >
+                          삭제
+                        </button>
+                      </span>
+                    </div>
+                  )}
                 </div>
               </li>
             ))}
