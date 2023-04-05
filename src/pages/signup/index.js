@@ -23,6 +23,14 @@ function SignUp() {
     setEndStep(false);
   }, [email, password]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("Authorization");
+
+    if (token !== null) {
+      navigate("/todo");
+    }
+  }, []);
+
   const signupHandler = () => {
     signup(email, password)
       .then((result) => {
